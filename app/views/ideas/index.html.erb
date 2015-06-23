@@ -1,0 +1,34 @@
+<h1>All Ideas</h1>
+
+<% @idea.each do |idea| %>
+
+  <p class="Idea Title"><%= link_to idea.title, idea %>
+
+  <% if idea.user != nil %>
+    <br>Created by <%= idea.user.email %>
+  <% end %>
+
+  <p><%= idea.body %>
+  <p><img src="<%idea.image%>">
+
+  <p><%= button_to "Delete", idea_path(idea), method: :delete, data: {confirm: "Are you sure?"} %>
+  <p><%= link_to "Edit", edit_idea_path(idea) %>
+
+
+  <p>
+  <% if user_signed_in? %>
+    <% if idea.user_id == current_user.id %>
+      <%= "You cannot join your own idea" %>
+    <% elsif idea.memberships.find_by_user_id(current_user.id) == nil %>
+      <%= link_to "Join as member", idea_memberships_path(idea), method: :post %>
+    <% else %>
+      <%= link_to "Leave membership", idea_membership_path(idea, idea.memberships.find_by_user_id(current_user.id) ), method: :delete %>
+    <% end %>
+  <% else %>
+    <%= "You need to sign in to join or leave this idea" %>
+  <% end %>
+
+
+
+  <hr>
+<% end %>
